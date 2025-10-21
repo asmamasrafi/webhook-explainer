@@ -68,15 +68,7 @@ const UseCases = () => {
 
           {/* Benefits Visual */}
           <Card className="mb-16 overflow-hidden border-2 shadow-card animate-fade-in-up">
-            <CardContent className="p-8">
-              <div className="rounded-xl overflow-hidden shadow-lg">
-                <img
-                  src={webhookBenefitsImage}
-                  alt="Avantages et cas d'utilisation des webhooks"
-                  className="w-full h-auto"
-                />
-              </div>
-            </CardContent>
+            
           </Card>
 
           {/* Use Cases Grid */}
