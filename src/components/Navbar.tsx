@@ -11,21 +11,55 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
+  const { toast } = useToast();
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Signup data:", formData);
-    setIsSignupOpen(false);
-    setFormData({ username: "", email: "", password: "" });
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(
+        "https://assma123.app.n8n.cloud/webhook-test/c0f06a99-43d3-4d5b-9f31-c1730a0cc3a0",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (response.ok) {
+        toast({
+          title: "Inscription réussie !",
+          description: "Votre compte a été créé avec succès.",
+        });
+        setIsSignupOpen(false);
+        setFormData({ username: "", email: "", password: "" });
+      } else {
+        throw new Error("Erreur lors de l'inscription");
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'inscription.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const scrollToSection = (id: string) => {
@@ -121,8 +155,12 @@ const Navbar = () => {
                       required
                     />
                   </div>
-                  <Button type="submit" className="w-full bg-gradient-primary">
-                    S'inscrire
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-gradient-primary"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Inscription..." : "S'inscrire"}
                   </Button>
                 </form>
               </DialogContent>
@@ -208,8 +246,12 @@ const Navbar = () => {
                         required
                       />
                     </div>
-                    <Button type="submit" className="w-full bg-gradient-primary">
-                      S'inscrire
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-gradient-primary"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Inscription..." : "S'inscrire"}
                     </Button>
                   </form>
                 </DialogContent>
